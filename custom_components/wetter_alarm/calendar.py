@@ -1,12 +1,8 @@
 """Support for Wetter-Alarm weather service."""
 
 import logging
-from homeassistant.components.calendar import (
-    CalendarEntity,
-    CalendarEvent,
-    STATE_ON,
-    STATE_OFF
-)
+from homeassistant.components.calendar import CalendarEntity, CalendarEvent
+from homeassistant.const import STATE_OFF, STATE_ON
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.typing import ConfigType
@@ -97,8 +93,8 @@ class WetterAlarmCalendar(CalendarEntity):
         for alarm in self._coordinator.data['meteo_alerts'].get("alert_list", []):
             if isinstance(alarm, dict):
                 #_LOGGER.debug(f"Processing alarm: {alarm}")
-                start_date = dt_util.parse_datetime(alarm.get("valid_from"))
-                end_date = dt_util.parse_datetime(alarm.get("valid_to"))
+                start_date = dt_util.parse_datetime(alarm.get("valid_from")) if isinstance(alarm.get("valid_from"), str) else None
+                end_date = dt_util.parse_datetime(alarm.get("valid_to")) if isinstance(alarm.get("valid_to"), str) else None
                 if start_date and end_date:
                     event = CalendarEvent(
                         summary=alarm.get("title", "No Title"),
